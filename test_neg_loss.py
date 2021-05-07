@@ -75,7 +75,7 @@ parser.add_argument(
     "--weight_perturbation",
     type=float,
     default=1e-4,
-    help="weight multiplier for Perturbation Loss",
+    help="weight multiplier for Negative Stroke/ Loss",
 )
 parser.add_argument(
     "-g",
@@ -144,6 +144,7 @@ for im_id in pbar:
     anno = annotations[im_id]
     bboxes = anno["box_examples_coordinates"]
     dots = np.array(anno["points"])
+    print(im_id)
 
     rects = list()
     for bbox in bboxes:

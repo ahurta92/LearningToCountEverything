@@ -75,7 +75,7 @@ parser.add_argument(
     "--weight_perturbation",
     type=float,
     default=1e-4,
-    help="weight multiplier for Negative Stroke/ Loss",
+    help="weight multiplier for Perturbation Loss",
 )
 parser.add_argument(
     "-g",
@@ -145,6 +145,8 @@ for im_id in pbar:
     bboxes = anno["box_examples_coordinates"]
     dots = np.array(anno["points"])
     print(im_id)
+    im_id_split = im_id.split(".")
+    id_first = im_id_split[0]
 
     rects = list()
     for bbox in bboxes:
@@ -153,7 +155,7 @@ for im_id in pbar:
         rects.append([y1, x1, y2, x2])
 
     image = Image.open("{}/{}".format(im_dir, im_id))
-    image_mask = Image.open("{}/{}_anno".format(mask_dir, im_id))
+    image_mask = Image.open("{}/{}_anno.png".format(mask_dir, id_first))
     # load image
     image.load()
     # sample dict

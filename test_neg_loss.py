@@ -156,6 +156,7 @@ for im_id in pbar:
 
     image = Image.open("{}/{}".format(im_dir, im_id))
     image_mask = Image.open("{}/{}_anno.png".format(mask_dir, id_first))
+    image_mask.load()
     # load image
     image.load()
     # sample dict
@@ -167,6 +168,7 @@ for im_id in pbar:
     if use_gpu:
         # send to cuda
         image = image.cuda()
+        image_mask = image_mask.cuda()
         boxes = boxes.cuda()
 
     with torch.no_grad():
@@ -188,11 +190,7 @@ for im_id in pbar:
         for step in range(0, args.gradient_steps):
             optimizer.zero_grad()
             output = adapted_regressor(features)
-            lCount = args.weight_mincount * MincountLoss(output, boxes)
-            lPerturbation = args.weight_perturbation * PerturbationLoss(
-                output, boxes, sigma=8
-            )
-            Loss = lCount + lPerturbation
+            Loss = args.weight_mincount * NegStrokeLoss(output, image_mask)
             # loss can become zero in some cases, where loss is a 0 valued scalar and not a tensor
             # So Perform gradient descent only for non zero cases
             if torch.is_tensor(Loss):

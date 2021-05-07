@@ -161,7 +161,7 @@ for im_id in pbar:
     image.load()
     # sample dict
     sample = {"image": image, "lines_boxes": rects}
-    sample_mask = {"image": image_mask}
+    sample_mask = {"image": image_mask, "lines_boxes": rects}
     # transform sample
     sample = Transform(sample)
     sample_mask = Transform(sample_mask)

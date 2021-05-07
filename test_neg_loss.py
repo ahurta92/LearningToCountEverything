@@ -207,9 +207,10 @@ for im_id in pbar:
             # print(id_first)
             # print(image_mask.size())
             # print(output.size())
-            image_mask = F.interpolate(
-                image_mask, size=output.size()[2:], mode="bicubic"
-            )
+            output = F.interpolate(output, image_mask.size()[2:], mode="bicubic")
+            # image_mask = F.interpolate(
+            #    image_mask, size=output.size()[2:], mode="bicubic"
+            # )
             Loss = args.weight_neg * NegStrokeLoss(output, image_mask)
             # loss can become zero in some cases, where loss is a 0 valued scalar and not a tensor
             # So Perform gradient descent only for non zero cases

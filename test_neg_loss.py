@@ -22,7 +22,8 @@ from tqdm import tqdm
 from os.path import exists
 import torch.optim as optim
 from utils import visualize_output_and_save
-
+from torchvision import transforms
+import torch.nn.functional as F
 
 parser = argparse.ArgumentParser(description="Few Shot Counting Evaluation code")
 parser.add_argument(
@@ -69,6 +70,13 @@ parser.add_argument(
     type=float,
     default=1e-9,
     help="weight multiplier for Mincount Loss",
+)
+parser.add_argument(
+    "-wn",
+    "--weight_neg",
+    type=float,
+    default=1e-3,
+    help="weight multiplier for NegStrokeLoss Loss",
 )
 parser.add_argument(
     "-wp",
@@ -156,17 +164,19 @@ for im_id in pbar:
 
     image = Image.open("{}/{}".format(im_dir, im_id))
     image_mask = Image.open("{}/{}_anno.png".format(mask_dir, id_first))
-    image_mask.load()
+    # image_mask=transforms.ToTensor()(image_mask).unsqueeze(0)
     # load image
     image.load()
+    image_mask.load()
     # sample dict
     sample = {"image": image, "lines_boxes": rects}
     sample_mask = {"image": image_mask, "lines_boxes": rects}
     # transform sample
     sample = Transform(sample)
     sample_mask = Transform(sample_mask)
-    image_mask = sample_mask["image"]
+    image_mask = sample_mask["image"].unsqueeze(0)
     image, boxes = sample["image"], sample["boxes"]
+    # print(image.size())
 
     if use_gpu:
         # send to cuda
@@ -193,7 +203,14 @@ for im_id in pbar:
         for step in range(0, args.gradient_steps):
             optimizer.zero_grad()
             output = adapted_regressor(features)
-            Loss = args.weight_mincount * NegStrokeLoss(output, image_mask)
+            # print(im_id)
+            # print(id_first)
+            # print(image_mask.size())
+            # print(output.size())
+            image_mask = F.interpolate(
+                image_mask, size=output.size()[2:], mode="bicubic"
+            )
+            Loss = args.weight_neg * NegStrokeLoss(output, image_mask)
             # loss can become zero in some cases, where loss is a 0 valued scalar and not a tensor
             # So Perform gradient descent only for non zero cases
             if torch.is_tensor(Loss):

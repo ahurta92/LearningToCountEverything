@@ -215,11 +215,11 @@ for im_id in pbar:
             (SSE / cnt) ** 0.5,
         )
     )
-    rslt_file = "{}/{}_out.png".format(args.output_dir, image_name)
-    visualize_output_and_save(
-        image.detach().cpu(), output.detach().cpu(), boxes.cpu(), rslt_file
-    )
-    print("===> Visualized output is saved to {}".format(rslt_file))
+    # rslt_file = "{}/{}_out.png".format(args.output_dir, image_name)
+    # visualize_output_and_save(
+    #    image.detach().cpu(), output.detach().cpu(), boxes.cpu(), rslt_file
+    # )
+    # print("===> Visualized output is saved to {}".format(rslt_file))
     print("")
 
 print(

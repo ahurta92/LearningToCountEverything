@@ -93,6 +93,7 @@ data_path = args.data_path
 anno_file = data_path + "annotation_Val_Test_384_VarV2.json"
 data_split_file = data_path + "Train_Test_Val_FSC147_HW6_Split.json"
 im_dir = data_path + "images_384_VarV2"
+mask_dir = data_path + "mask_images"
 
 if not exists(anno_file) or not exists(im_dir):
     print("Make sure you set up the --data-path correctly.")
@@ -151,6 +152,7 @@ for im_id in pbar:
         rects.append([y1, x1, y2, x2])
 
     image = Image.open("{}/{}".format(im_dir, im_id))
+    image_mask = Image.open("{}/{}_anno".format(mask_dir, im_id))
     # load image
     image.load()
     # sample dict

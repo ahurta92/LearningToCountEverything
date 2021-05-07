@@ -119,6 +119,8 @@ def MincountLoss(output, boxes, use_gpu=True):
         if X.item() <= 1:
             Loss += F.mse_loss(X, ones)
     return Loss
+
+
 def NegStrokeLoss(output, boxes, use_gpu=True):
     ones = torch.ones(1)
     if use_gpu:

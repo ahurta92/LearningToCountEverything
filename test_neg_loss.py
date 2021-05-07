@@ -11,7 +11,7 @@ Date: 2021/04/19
 import copy
 from model import CountRegressor, Resnet50FPN
 from utils import MAPS, Scales, Transform, extract_features
-from utils import MincountLoss, PerturbationLoss
+from utils import MincountLoss, PerturbationLoss, NegStrokeLoss
 from PIL import Image
 import os
 import torch

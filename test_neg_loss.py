@@ -152,7 +152,7 @@ for im_id in pbar:
     anno = annotations[im_id]
     bboxes = anno["box_examples_coordinates"]
     dots = np.array(anno["points"])
-    print(im_id)
+    # print(im_id)
     im_id_split = im_id.split(".")
     id_first = im_id_split[0]
 
@@ -164,17 +164,18 @@ for im_id in pbar:
 
     image = Image.open("{}/{}".format(im_dir, im_id))
     image_mask = Image.open("{}/{}_anno.png".format(mask_dir, id_first))
-    # image_mask=transforms.ToTensor()(image_mask).unsqueeze(0)
+    image_mask = transforms.ToTensor()(image_mask).unsqueeze(0)
+    image_mask = transforms.Grayscale(num_output_channels=1)(image_mask)
     # load image
     image.load()
-    image_mask.load()
+    # image_mask.load()
     # sample dict
     sample = {"image": image, "lines_boxes": rects}
-    sample_mask = {"image": image_mask, "lines_boxes": rects}
+    # sample_mask = {"image": image_mask, "lines_boxes": rects}
     # transform sample
     sample = Transform(sample)
-    sample_mask = Transform(sample_mask)
-    image_mask = sample_mask["image"].unsqueeze(0)
+    # sample_mask = Transform(sample_mask)
+    # image_mask = sample_mask["image"].unsqueeze(0)
     image, boxes = sample["image"], sample["boxes"]
     # print(image.size())
 
@@ -207,12 +208,13 @@ for im_id in pbar:
             # print(id_first)
             # print(image_mask.size())
             # print(output.size())
-            output = F.interpolate(output, image_mask.size()[2:], mode="bicubic")
+            # output = F.interpolate(output, image_mask.size()[2:], mode="bicubic")
+            output = transforms.Resize(size=(image_mask.size()[2:]))(output)
             # image_mask = F.interpolate(
             #    image_mask, size=output.size()[2:], mode="bicubic"
             # )
             Loss = args.weight_neg * NegStrokeLoss(output, image_mask)
-            print(Loss)
+            # print(Loss)
             # loss can become zero in some cases, where loss is a 0 valued scalar and not a tensor
             # So Perform gradient descent only for non zero cases
             if torch.is_tensor(Loss):

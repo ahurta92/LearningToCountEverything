@@ -212,6 +212,7 @@ for im_id in pbar:
             #    image_mask, size=output.size()[2:], mode="bicubic"
             # )
             Loss = args.weight_neg * NegStrokeLoss(output, image_mask)
+            print(Loss)
             # loss can become zero in some cases, where loss is a 0 valued scalar and not a tensor
             # So Perform gradient descent only for non zero cases
             if torch.is_tensor(Loss):

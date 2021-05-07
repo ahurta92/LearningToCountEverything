@@ -123,6 +123,7 @@ def MincountLoss(output, boxes, use_gpu=True):
 
 def NegStrokeLoss(output, image_mask, use_gpu=True):
     Loss = output * image_mask
+    Loss = Loss.abs()
     return Loss.sum()
 
 

@@ -165,7 +165,7 @@ for im_id in pbar:
     # transform sample
     sample = Transform(sample)
     sample_mask = Transform(sample_mask)
-    mask_image = sample_mask["image"]
+    image_mask = sample_mask["image"]
     image, boxes = sample["image"], sample["boxes"]
 
     if use_gpu:

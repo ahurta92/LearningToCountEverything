@@ -161,8 +161,11 @@ for im_id in pbar:
     image.load()
     # sample dict
     sample = {"image": image, "lines_boxes": rects}
+    sample_mask = {"image": image_mask}
     # transform sample
     sample = Transform(sample)
+    sample_mask = Transform(sample_mask)
+    mask_image = sample_mask["image"]
     image, boxes = sample["image"], sample["boxes"]
 
     if use_gpu:

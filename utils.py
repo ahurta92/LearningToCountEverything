@@ -122,12 +122,22 @@ def MincountLoss(output, boxes, use_gpu=True):
 
 
 def NegStrokeLoss(output, image_mask, use_gpu=True):
-    Loss = output * image_mask
+
+    zeros = torch.zeros_like(output)
+    if use_gpu:
+        zeros = zeros.cuda()
+
+    # =output.exp()*image_mask
+    neg = output * image_mask
+    # pos=torch.where(image_mask==0,output,zeros)
+
+    # Loss=F.mse_loss(c,ones)
+    Loss = neg.sum()
     # print(Loss.size())
     # print(image_mask.size())
     # print(output.size())
-    Loss = Loss.square()
-    return Loss.sum()
+    # print(Loss)
+    return Loss
 
 
 def pad_to_size(feat, desire_h, desire_w):
